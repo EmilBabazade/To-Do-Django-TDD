@@ -37,19 +37,27 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1) # wait for page to update
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.Text == '1: Buy peacock feathers' for row in rows),
-            "New to-do item did not appear in table"
-        )
+        self.assertIn('1: Buy peacock feathers.', [row.text for row in rows])
 
         # There is still a text box inviting him to enter another to-do item.
-        # He types 'Use peacock feathers to make a fly' ( he is unexpectedly methodical)
-        self.fail('Finish the test!')
+        # He types 'Use peacock feathers to make a fly.' ( he is unexpectedly methodical)
+        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box.send_keys('Use peacock feathers to make a fly.')
+        input_box.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates again and now he can see both to-do items in the list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers.', [row.text for row in rows])
+        self.assertIn(
+                '2: Use peacock feathers to make a fly.',
+                [row.text for row in rows]
+            )
 
         # Ed wonders wether the site will remember his list. Then he sees that the site 
         # has generated a unique URL for him -- there is some explanatory text to that effect
+        self.fail('Finish the test!')
 
         # He visits the URL - his to-do list is alive and well staring at his face
 
