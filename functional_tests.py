@@ -3,13 +3,22 @@ from selenium.webdriver.common.keys import Keys
 import time
 import unittest
 
+# before improting local modules django.setup() must be run
+# not sure why
+import django
+django.setup()
+
+from lists.models import Item
+
 class NewVisitorTest(unittest.TestCase):
     def setUp(self):
         self.geckodriver_path = 'C:/Users/emilb/Documents/geckodriver.exe'
         self.browser = webdriver.Firefox(executable_path=self.geckodriver_path)
-
+        
     def tearDown(self):
         self.browser.quit()
+        # delete everything in db (just for now)
+        # Item.objects.all().delete()
 
     def check_for_text_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_list_table')
