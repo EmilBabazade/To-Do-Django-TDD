@@ -87,7 +87,8 @@ class NewVisitorTest(LiveServerTestCase):
         # Jade visits the home page. There is no sign of Ed's list
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn(text, '1: Buy peacock feathers.')
+        self.assertNotIn('Buy peacock feathers.', page_text)
+        self.assertNotIn('make a fly', page_text)
 
         # Jade starts a new list by entering a new item.
         input_box = self.browser.find_element_by_id('id_new_item')
@@ -98,6 +99,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Jade gets his own unique url
         jades_list_url = self.browser.current_url
         self.assertRegex(jades_list_url, '/lists/.+')
+        self.assertNotEqual(jades_list_url, eds_list_url)
 
         # Again, there is no trace of Ed's stuff
         page_text = self.browser.find_element_by_id('body').text

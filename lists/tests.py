@@ -5,6 +5,20 @@ from django.http import HttpRequest
 from lists.views import home_page
 from lists.models import Item
 
+class ListViewTest(TestCase):
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the_only_list_in_the_world/')
+        self.assertTemplateUsed(response, 'list.html')
+
+    def test_displays_all_items(self):
+        Item.objects.create(text='Itemy1')
+        Item.objects.create(text='Itemy2')
+
+        response = self.client.get('/lists/the_only_list_in_the_world/')
+
+        self.assertContains(response, 'Itemy1')
+        self.assertContains(response, 'Itemy2')
+
 class HomePageTest(TestCase):
     def test_uses_home_template(self):
         response = self.client.get('/')
@@ -20,20 +34,11 @@ class HomePageTest(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the_only_list_in_the_world/')
 
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
-
-    def test_displays_all_list_items(self):
-        Item.objects.create(text='Itemy1')
-        Item.objects.create(text='Itemy2')
-
-        response = self.client.get('/')
-
-        self.assertIn('Itemy1', response.content.decode())
-        self.assertIn('Itemy2', response.content.decode())
 
 class ItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
