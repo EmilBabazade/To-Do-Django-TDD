@@ -102,7 +102,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(jades_list_url, eds_list_url)
 
         # Again, there is no trace of Ed's stuff
-        page_text = self.browser.find_element_by_id('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('1: Buy peacock feathers.', page_text)
         self.assertIn('1: Buy milk.', page_text)
 
